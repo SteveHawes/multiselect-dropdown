@@ -16,11 +16,8 @@ part 'models/dropdown_item.dart';
 part 'widgets/dropdown.dart';
 
 /// typedef for the dropdown item builder.
-typedef DropdownItemBuilder<T> = Widget Function(
-  DropdownItem<T> item,
-  int index,
-  VoidCallback onTap,
-);
+typedef DropdownItemBuilder<T> =
+    Widget Function(DropdownItem<T> item, int index, VoidCallback onTap);
 
 /// typedef for the callback when the item is selected/de-selected/disabled.
 typedef OnSelectionChanged<T> = void Function(List<T> selectedItems);
@@ -110,8 +107,8 @@ class MultiDropdown<T extends Object> extends StatefulWidget {
     this.scrollToSelected = false,
     this.disableSelected = false,
     Key? key,
-  })  : future = null,
-        super(key: key);
+  }) : future = null,
+       super(key: key);
 
   /// Creates a multiselect dropdown widget with future request.
   ///
@@ -160,8 +157,8 @@ class MultiDropdown<T extends Object> extends StatefulWidget {
     this.scrollToSelected = false,
     this.disableSelected = false,
     Key? key,
-  })  : items = const [],
-        super(key: key);
+  }) : items = const [],
+       super(key: key);
 
   /// The list of dropdown items.
   final List<DropdownItem<T>> items;
@@ -411,7 +408,8 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
             final renderBoxSize = renderBox.size;
             final renderBoxOffset = renderBox.localToGlobal(Offset.zero);
 
-            final availableHeight = MediaQuery.of(context).size.height -
+            final availableHeight =
+                MediaQuery.of(context).size.height -
                 renderBoxOffset.dy -
                 renderBoxSize.height;
 
@@ -429,10 +427,12 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
                 CompositedTransformFollower(
                   link: _layerLink,
                   showWhenUnlinked: false,
-                  targetAnchor:
-                      showOnTop ? Alignment.topLeft : Alignment.bottomLeft,
-                  followerAnchor:
-                      showOnTop ? Alignment.bottomLeft : Alignment.topLeft,
+                  targetAnchor: showOnTop
+                      ? Alignment.topLeft
+                      : Alignment.bottomLeft,
+                  followerAnchor: showOnTop
+                      ? Alignment.bottomLeft
+                      : Alignment.topLeft,
                   offset: widget.dropdownDecoration.marginTop == 0
                       ? Offset.zero
                       : Offset(0, widget.dropdownDecoration.marginTop),
@@ -451,7 +451,8 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
                       singleSelect: widget.singleSelect,
                       onSearchChange: _dropdownController._setSearchQuery,
                       // only scroll to selected item when the dropdown is opened, not when searching
-                      scrollToSelected: widget.scrollToSelected &&
+                      scrollToSelected:
+                          widget.scrollToSelected &&
                           _dropdownController._searchQuery.isEmpty,
                       disableSelected: widget.disableSelected,
                     ),
@@ -468,7 +469,8 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
               builder: (_, __) {
                 return InkWell(
                   mouseCursor: widget.enabled
-                      ? SystemMouseCursors.grab
+                      ? (widget.fieldDecoration.mouseCursor ??
+                            SystemMouseCursors.click)
                       : SystemMouseCursors.forbidden,
                   onTap: widget.enabled ? _handleTap : null,
                   focusNode: _focusNode,
@@ -509,12 +511,14 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
   InputDecoration _buildDecoration() {
     final theme = Theme.of(context);
 
-    final border = widget.fieldDecoration.border ??
+    final border =
+        widget.fieldDecoration.border ??
         OutlineInputBorder(
           borderRadius: BorderRadius.circular(
             widget.fieldDecoration.borderRadius,
           ),
-          borderSide: theme.inputDecorationTheme.border?.borderSide ??
+          borderSide:
+              theme.inputDecorationTheme.border?.borderSide ??
               const BorderSide(),
         );
 
@@ -558,8 +562,9 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
         child: const Icon(Icons.clear),
         onTap: () {
           _dropdownController.clearAll();
-          _formFieldKey.currentState
-              ?.didChange(_dropdownController.selectedItems);
+          _formFieldKey.currentState?.didChange(
+            _dropdownController.selectedItems,
+          );
         },
       );
     }
@@ -649,13 +654,15 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
           const SizedBox(width: 4),
           InkWell(
             onTap: () {
-              _dropdownController
-                  .unselectWhere((element) => element.label == option.label);
+              _dropdownController.unselectWhere(
+                (element) => element.label == option.label,
+              );
             },
             child: SizedBox(
               width: 16,
               height: 16,
-              child: chipDecoration.deleteIcon ??
+              child:
+                  chipDecoration.deleteIcon ??
                   const Icon(Icons.close, size: 16),
             ),
           ),
