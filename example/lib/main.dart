@@ -73,9 +73,9 @@ class _MyHomePageState extends State<MyHomePage> {
       DropdownItem(
         label: 'India', 
         value: User(name: 'India', id: 2),
-        unselectedIcon: Row(
+        unselectedIcon: const Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             Icon(Icons.arrow_forward, size: 16, color: Colors.green),
             SizedBox(width: 4),
             Text('Select', style: TextStyle(fontSize: 12, color: Colors.green)),
@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
         unselectedIcon: Container(
           padding: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-            color: Colors.blue.withOpacity(0.2),
+            color: Colors.blue.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(4),
           ),
           child: const Text('FR', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),

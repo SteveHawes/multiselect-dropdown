@@ -17,7 +17,7 @@ part 'widgets/dropdown.dart';
 
 /// typedef for the dropdown item builder.
 typedef DropdownItemBuilder<T> = Widget Function(
-    DropdownItem<T> item, int index, VoidCallback onTap);
+    DropdownItem<T> item, int index, VoidCallback onTap,);
 
 /// typedef for the callback when the item is selected/de-selected/disabled.
 typedef OnSelectionChanged<T> = void Function(List<T> selectedItems);
@@ -260,7 +260,7 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
   @override
   void initState() {
     super.initState();
-    _initializeController();
+    unawaited(_initializeController());
   }
 
   Future<void> _initializeController() async {
@@ -357,7 +357,7 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
 
       _dropdownController = widget.controller ?? MultiSelectController<T>();
 
-      _initializeController();
+      unawaited(_initializeController());
     }
 
     // if the focus node is changed, then dispose the old focus node
