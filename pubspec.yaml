@@ -3,7 +3,7 @@ description: "Streamlined Flutter widget for versatile multi-selection with exte
 version: 3.0.2
 homepage: "https://github.com/oi-narendra/multiselect-dropdown"
 repository: https://github.com/SteveHawes/multiselect-dropdown
-publish-to: https://dart.cloudsmith.io/ews/ews-flutter-packages/
+publish_to: https://dart.cloudsmith.io/ews/ews-flutter-packages/
 
 environment:
   sdk: ">=2.16.2 <4.0.0"
