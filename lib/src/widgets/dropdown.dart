@@ -13,14 +13,14 @@ class _Dropdown<T> extends StatelessWidget {
     required this.maxSelections,
     required this.items,
     required this.onItemTap,
-    Key? key,
+    super.key,
     this.onSearchChange,
     this.itemBuilder,
     this.itemSeparator,
     this.singleSelect = false,
     this.scrollToSelected = false,
     this.disableSelected = false,
-  }) : super(key: key);
+  });
 
   /// The decoration of the dropdown.
   final DropdownDecoration decoration;
@@ -113,7 +113,7 @@ class _Dropdown<T> extends StatelessWidget {
                   itemCount: items.length,
                   itemBuilder: (_, int index) => _buildOption(index, theme),
                   shrinkWrap: true,
-                  separatorBuilder: (_, __) =>
+                  separatorBuilder: (_, _) =>
                       itemSeparator ?? const SizedBox.shrink(),
                   initialScrollIndex: scrollToSelected
                       ? items.indexWhere((element) => element.selected)

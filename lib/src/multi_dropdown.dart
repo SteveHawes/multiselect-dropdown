@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:io' if (dart.library.io) 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 part 'controllers/future_controller.dart';
@@ -106,9 +106,8 @@ class MultiDropdown<T extends Object> extends StatefulWidget {
     this.closeOnBackButton = false,
     this.scrollToSelected = false,
     this.disableSelected = false,
-    Key? key,
-  })  : future = null,
-        super(key: key);
+    super.key,
+  }) : future = null;
 
   /// Creates a multiselect dropdown widget with future request.
   ///
@@ -156,9 +155,8 @@ class MultiDropdown<T extends Object> extends StatefulWidget {
     this.closeOnBackButton = false,
     this.scrollToSelected = false,
     this.disableSelected = false,
-    Key? key,
-  })  : items = const [],
-        super(key: key);
+    super.key,
+  }) : items = const [];
 
   /// The list of dropdown items.
   final List<DropdownItem<T>> items;
@@ -462,7 +460,7 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
             link: _layerLink,
             child: ListenableBuilder(
               listenable: _listenable,
-              builder: (_, __) {
+              builder: (_, _) {
                 return Listener(
                   behavior: HitTestBehavior.opaque,
                   child: MouseRegion(

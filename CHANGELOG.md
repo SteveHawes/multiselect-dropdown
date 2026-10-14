@@ -1,5 +1,16 @@
 # ChangeLOG
 
+## 4.0.0
+
+### Breaking Changes
+
+- Built on `package:material_ui` instead of the SDK's `package:flutter/material.dart`. Every Material
+  type the package takes or returns (`InputBorder`, `InputDecoration`, `TextStyle` themes and the
+  widgets it builds) is now `material_ui`'s, so an app passing them must be on `material_ui` too —
+  as apps on EWS Flutter Framework 4.0.0 are. Inside such an app the dropdown now reads the app's
+  theme instead of Material's defaults.
+- Requires Dart 3.13 and Flutter 3.47, which `material_ui` 1.6 needs.
+
 ## 3.0.2
 
 - Added optional `textStyle` parameter to `DropdownItem` to allow custom styling of individual dropdown items.
