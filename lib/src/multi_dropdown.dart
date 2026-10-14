@@ -17,7 +17,10 @@ part 'widgets/dropdown.dart';
 
 /// typedef for the dropdown item builder.
 typedef DropdownItemBuilder<T> = Widget Function(
-    DropdownItem<T> item, int index, VoidCallback onTap,);
+  DropdownItem<T> item,
+  int index,
+  VoidCallback onTap,
+);
 
 /// typedef for the callback when the item is selected/de-selected/disabled.
 typedef OnSelectionChanged<T> = void Function(List<T> selectedItems);
@@ -83,7 +86,7 @@ class MultiDropdown<T extends Object> extends StatefulWidget {
   /// Note: This option requires the app to have a router, such as MaterialApp.router, in order to work properly.
   ///
   ///
-  const MultiDropdown({
+  const new({
     required this.items,
     this.fieldDecoration = const FieldDecoration(),
     this.dropdownDecoration = const DropdownDecoration(),
@@ -132,7 +135,7 @@ class MultiDropdown<T extends Object> extends StatefulWidget {
   /// );
   ///
   /// ```
-  const MultiDropdown.future({
+  const new future({
     required this.future,
     this.fieldDecoration = const FieldDecoration(),
     this.dropdownDecoration = const DropdownDecoration(),
@@ -290,17 +293,15 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
   void _listenBackButton() {
     if (!widget.closeOnBackButton) return;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      try {
-        _registerBackButtonDispatcherCallback();
-      } catch (e) {
-        debugPrint('Error: $e');
-      }
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _registerBackButtonDispatcherCallback(),
+    );
   }
 
   void _registerBackButtonDispatcherCallback() {
-    final rootBackDispatcher = Router.of(context).backButtonDispatcher;
+    if (!mounted) return;
+
+    final rootBackDispatcher = Router.maybeOf(context)?.backButtonDispatcher;
 
     if (rootBackDispatcher != null) {
       rootBackDispatcher.createChildBackButtonDispatcher()
@@ -406,7 +407,8 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
             final renderBoxSize = renderBox.size;
             final renderBoxOffset = renderBox.localToGlobal(Offset.zero);
 
-            final availableHeight = MediaQuery.of(context).size.height -
+            final availableHeight =
+                MediaQuery.of(context).size.height -
                 renderBoxOffset.dy -
                 renderBoxSize.height;
 
@@ -424,10 +426,12 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
                 CompositedTransformFollower(
                   link: _layerLink,
                   showWhenUnlinked: false,
-                  targetAnchor:
-                      showOnTop ? Alignment.topLeft : Alignment.bottomLeft,
-                  followerAnchor:
-                      showOnTop ? Alignment.bottomLeft : Alignment.topLeft,
+                  targetAnchor: showOnTop
+                      ? Alignment.topLeft
+                      : Alignment.bottomLeft,
+                  followerAnchor: showOnTop
+                      ? Alignment.bottomLeft
+                      : Alignment.topLeft,
                   offset: widget.dropdownDecoration.marginTop == 0
                       ? Offset.zero
                       : Offset(0, widget.dropdownDecoration.marginTop),
@@ -446,7 +450,8 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
                       singleSelect: widget.singleSelect,
                       onSearchChange: _dropdownController._setSearchQuery,
                       // only scroll to selected item when the dropdown is opened, not when searching
-                      scrollToSelected: widget.scrollToSelected &&
+                      scrollToSelected:
+                          widget.scrollToSelected &&
                           _dropdownController._searchQuery.isEmpty,
                       disableSelected: widget.disableSelected,
                     ),
@@ -466,7 +471,7 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
                   child: MouseRegion(
                     cursor: widget.enabled
                         ? (widget.fieldDecoration.mouseCursor ??
-                            SystemMouseCursors.click)
+                              SystemMouseCursors.click)
                         : SystemMouseCursors.forbidden,
                     child: GestureDetector(
                       onTap: widget.enabled ? _handleTap : null,
@@ -508,12 +513,14 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
   InputDecoration _buildDecoration() {
     final theme = Theme.of(context);
 
-    final border = widget.fieldDecoration.border ??
+    final border =
+        widget.fieldDecoration.border ??
         OutlineInputBorder(
           borderRadius: BorderRadius.circular(
             widget.fieldDecoration.borderRadius,
           ),
-          borderSide: theme.inputDecorationTheme.border?.borderSide ??
+          borderSide:
+              theme.inputDecorationTheme.border?.borderSide ??
               const BorderSide(),
         );
 
@@ -656,22 +663,14 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
             child: SizedBox(
               width: 16,
               height: 16,
-              child: chipDecoration.deleteIcon ??
+              child:
+                  chipDecoration.deleteIcon ??
                   const Icon(Icons.close, size: 16),
             ),
           ),
         ],
       ),
     );
-  }
-
-  BorderRadius? _getFieldBorderRadius() {
-    if (widget.fieldDecoration.border is OutlineInputBorder) {
-      return (widget.fieldDecoration.border! as OutlineInputBorder)
-          .borderRadius;
-    }
-
-    return BorderRadius.circular(widget.fieldDecoration.borderRadius);
   }
 
   void _handleTap() {

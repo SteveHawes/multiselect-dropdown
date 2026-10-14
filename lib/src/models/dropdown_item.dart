@@ -8,7 +8,7 @@ class DropdownItem<T> {
   /// The [disabled] and [selected] parameters are optional and default to false.
   /// The [textStyle] parameter is optional and allows custom text styling for this item.
   /// The [unselectedIcon] parameter is optional and allows displaying a custom widget when the item is not selected.
-  DropdownItem({
+  new({
     required this.label,
     required this.value,
     this.disabled = false,
@@ -24,7 +24,7 @@ class DropdownItem<T> {
   /// - 'value': The value associated with the dropdown item (required).
   /// - 'disabled': Indicates whether the dropdown item is disabled (optional, default is false).
   /// - 'selected': Indicates whether the dropdown item is selected (optional, default is false).
-  factory DropdownItem.fromMap(Map<String, dynamic> map) {
+  factory fromMap(Map<String, dynamic> map) {
     return DropdownItem<T>(
       label: map['label'] as String? ?? '',
       value: map['value'] as T,
@@ -44,10 +44,10 @@ class DropdownItem<T> {
 
   /// Indicates whether the dropdown item is selected.
   bool selected;
-  
+
   /// Optional text style to apply to this item when displayed.
   final TextStyle? textStyle;
-  
+
   /// Optional widget to display when the item is not selected.
   final Widget? unselectedIcon;
 
@@ -91,10 +91,10 @@ class DropdownItem<T> {
 
   @override
   int get hashCode =>
-      label.hashCode ^ 
-      value.hashCode ^ 
-      disabled.hashCode ^ 
-      selected.hashCode ^ 
+      label.hashCode ^
+      value.hashCode ^
+      disabled.hashCode ^
+      selected.hashCode ^
       (textStyle?.hashCode ?? 0) ^
       (unselectedIcon?.hashCode ?? 0);
 

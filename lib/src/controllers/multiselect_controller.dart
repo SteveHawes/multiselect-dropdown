@@ -49,7 +49,10 @@ class MultiSelectController<T> extends ChangeNotifier {
 
   /// sets the list of dropdown items.
   /// It replaces the existing list of dropdown items.
-  void setItems(List<DropdownItem<T>> options, {bool skipOnSelectionChanged = false}) {
+  void setItems(
+    List<DropdownItem<T>> options, {
+    bool skipOnSelectionChanged = false,
+  }) {
     _items
       ..clear()
       ..addAll(options);
@@ -210,11 +213,14 @@ class MultiSelectController<T> extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Kept as a method rather than a setter since it is private, internal wiring
+  // called by the widget, not part of the controller's public property API.
   // ignore: use_setters_to_change_properties
   void _setOnSelectionChange(OnSelectionChanged<T>? onSelectionChanged) {
     _onSelectionChanged = onSelectionChanged;
   }
 
+  // Kept as a method rather than a setter for the same reason as above.
   // ignore: use_setters_to_change_properties
   void _setOnSearchChange(OnSearchChanged? onSearchChanged) {
     _onSearchChanged = onSearchChanged;
@@ -230,7 +236,11 @@ class MultiSelectController<T> extends ChangeNotifier {
       _filteredItems = _items
           .where(
             (item) =>
-                item.label.toLowerCase().contains(_searchQuery.toLowerCase()) || (item.value is String && (item.value as String).toLowerCase().contains(_searchQuery.toLowerCase())),
+                item.label.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                (item.value is String &&
+                    (item.value as String).toLowerCase().contains(
+                      _searchQuery.toLowerCase(),
+                    )),
           )
           .toList();
     }
