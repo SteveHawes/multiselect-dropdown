@@ -79,22 +79,22 @@ class _Dropdown<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final panelColor =
+        decoration.backgroundColor ?? theme.colorScheme.surfaceContainer;
 
+    // The Material alone paints the panel (and clips it to its radius). A
+    // coloured box between it and the options would hide their selected fill
+    // and ink splashes, which ListTile asserts against in debug builds.
     final child = Material(
       elevation: decoration.elevation,
       borderRadius: decoration.borderRadius,
       clipBehavior: Clip.antiAlias,
-      color: decoration.backgroundColor,
-      surfaceTintColor: decoration.backgroundColor,
+      color: panelColor,
+      surfaceTintColor: panelColor,
       child: Focus(
         canRequestFocus: false,
         skipTraversal: true,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: decoration.borderRadius,
-            color: decoration.backgroundColor,
-            backgroundBlendMode: BlendMode.dstATop,
-          ),
+        child: ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: width,
             maxHeight: decoration.maxHeight,
@@ -183,14 +183,14 @@ class _Dropdown<T> extends StatelessWidget {
         focusColor: dropdownItemDecoration.backgroundColor?.withAlpha(100),
         selectedColor:
             dropdownItemDecoration.selectedTextColor ??
-            theme.colorScheme.onSurface,
+            theme.colorScheme.onSecondaryContainer,
         textColor: disabled
             ? dropdownItemDecoration.disabledTextColor
             : dropdownItemDecoration.textColor ?? theme.colorScheme.onSurface,
         tileColor: tileColor ?? Colors.transparent,
         selectedTileColor:
             dropdownItemDecoration.selectedBackgroundColor ??
-            Colors.grey.shade200,
+            theme.colorScheme.secondaryContainer,
         onTap: disabled
             ? null
             : () {

@@ -640,37 +640,79 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
     DropdownItem<dynamic> option,
     ChipDecoration chipDecoration,
   ) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final fill = widget.enabled
+        ? chipDecoration.backgroundColor ??
+              theme.chipTheme.backgroundColor ??
+              colorScheme.surfaceContainerHigh
+        : chipDecoration.disabledBackgroundColor ??
+              colorScheme.surfaceContainerHighest;
+    // Left to inherit, the label takes the theme's text colour, which in a
+    // dark theme is light, so it vanished on the old fixed light-grey chip.
+    // The ink is chosen against the chip actually painted instead.
+    final ink = _readableInk(fill, colorScheme);
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: chipDecoration.borderRadius,
-        color: widget.enabled
-            ? chipDecoration.backgroundColor
-            : Colors.grey.shade100,
+        color: fill,
         border: chipDecoration.border,
       ),
       padding: chipDecoration.padding,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(option.label, style: chipDecoration.labelStyle),
-          const SizedBox(width: 4),
-          InkWell(
-            onTap: () {
-              _dropdownController.unselectWhere(
-                (element) => element.label == option.label,
-              );
-            },
-            child: SizedBox(
-              width: 16,
-              height: 16,
-              child:
-                  chipDecoration.deleteIcon ??
-                  const Icon(Icons.close, size: 16),
-            ),
+          Text(
+            option.label,
+            style: TextStyle(color: ink).merge(chipDecoration.labelStyle),
           ),
+          // A disabled dropdown cannot be changed, so it offers no delete.
+          if (widget.enabled) ...[
+            const SizedBox(width: 4),
+            InkWell(
+              onTap: () {
+                _dropdownController.unselectWhere(
+                  (element) => element.label == option.label,
+                );
+              },
+              child: SizedBox(
+                width: 16,
+                height: 16,
+                child: IconTheme.merge(
+                  data: IconThemeData(
+                    color: chipDecoration.labelStyle?.color ?? ink,
+                    size: 16,
+                  ),
+                  child:
+                      chipDecoration.deleteIcon ??
+                      const Icon(Icons.close, size: 16),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
+  }
+
+  /// Whichever of the scheme's surface inks reads better on [fill].
+  static Color _readableInk(Color fill, ColorScheme colorScheme) {
+    final fillLuminance = fill.computeLuminance();
+    double contrast(Color ink) {
+      final inkLuminance = ink.computeLuminance();
+      final lighter = inkLuminance > fillLuminance
+          ? inkLuminance
+          : fillLuminance;
+      final darker = inkLuminance > fillLuminance
+          ? fillLuminance
+          : inkLuminance;
+      return (lighter + 0.05) / (darker + 0.05);
+    }
+
+    return contrast(colorScheme.onSurface) >= contrast(colorScheme.surface)
+        ? colorScheme.onSurface
+        : colorScheme.surface;
   }
 
   void _handleTap() {

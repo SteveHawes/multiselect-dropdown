@@ -41,17 +41,23 @@ class SearchFieldDecoration {
 class DropdownItemDecoration {
   /// Creates a new instance of [DropdownItemDecoration].
   ///
-  /// [backgroundColor] is the background color of the dropdown item. The default value is white.
+  /// [backgroundColor] is the background color of the dropdown item. When null the item shows the
+  /// dropdown's own background.
   ///
-  /// [disabledBackgroundColor] is the background color of the disabled dropdown item. The default value is grey.
+  /// [disabledBackgroundColor] is the background color of the disabled dropdown item. When null it is
+  /// [backgroundColor] at reduced opacity.
   ///
-  /// [selectedBackgroundColor] is the background color of the selected dropdown item. The default value is blue.
+  /// [selectedBackgroundColor] is the background color of the selected dropdown item. When null it is
+  /// the theme's `colorScheme.secondaryContainer`.
   ///
-  /// [selectedTextColor] is the text color of the selected dropdown item. The default value is white.
+  /// [selectedTextColor] is the text color of the selected dropdown item. When null it is the theme's
+  /// `colorScheme.onSecondaryContainer`.
   ///
-  /// [textColor] is the text color of the dropdown item. The default value is black.
+  /// [textColor] is the text color of the dropdown item. When null it is the theme's
+  /// `colorScheme.onSurface`.
   ///
-  /// [disabledTextColor] is the text color of the disabled dropdown item. The default value is black.
+  /// [disabledTextColor] is the text color of the disabled dropdown item. When null it is the theme's
+  /// disabled colour.
   ///
   /// [selectedIcon] is the icon to display for the selected dropdown item. The default value is Icon(Icons.check).
   ///
@@ -96,11 +102,12 @@ class DropdownItemDecoration {
 class DropdownDecoration {
   /// Creates a new instance of [DropdownDecoration].
   ///
-  /// [backgroundColor] is the background color of the dropdown. The default value is white.
+  /// [backgroundColor] is the background color of the dropdown. When null it is the theme's
+  /// `colorScheme.surfaceContainer`, so the list follows a light or dark theme.
   ///
   /// [elevation] is the elevation of the dropdown. The default value is 1.
   ///
-  /// [maxHeight] is the height of the dropdown. The default value is 300.
+  /// [maxHeight] is the height of the dropdown. The default value is 400.
   ///
   /// [marginTop] is the margin top of the dropdown. The default value is 0.
   ///
@@ -108,7 +115,7 @@ class DropdownDecoration {
   ///
 
   const new({
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
     this.elevation = 1,
     this.maxHeight = 400,
     this.marginTop = 0,
@@ -117,8 +124,8 @@ class DropdownDecoration {
     this.header,
   });
 
-  /// The background color of the dropdown.
-  final Color backgroundColor;
+  /// The background color of the dropdown, or null for the theme's `colorScheme.surfaceContainer`.
+  final Color? backgroundColor;
 
   /// The elevation of the dropdown.
   final double elevation;
@@ -247,11 +254,18 @@ class FieldDecoration {
 class ChipDecoration {
   /// Creates a new instance of [ChipDecoration].
   ///
-  /// [deleteIcon] is the icon to display for deleting a chip.
+  /// [deleteIcon] is the icon to display for deleting a chip. It is not shown while the dropdown is
+  /// disabled.
   ///
-  /// [backgroundColor] is the background color of the chip.
+  /// [backgroundColor] is the background color of the chip. When null it is the theme's
+  /// `chipTheme.backgroundColor`, or `colorScheme.surfaceContainerHigh` without one.
   ///
-  /// [labelStyle] is the style of the chip label.
+  /// [disabledBackgroundColor] is the background color of the chip while the dropdown is disabled.
+  /// When null it is the theme's `colorScheme.surfaceContainerHighest`.
+  ///
+  /// [labelStyle] is the style of the chip label. When it gives no color, the label (and the delete
+  /// icon) is drawn in whichever of the theme's `colorScheme.onSurface` and `colorScheme.surface`
+  /// reads better on the chip.
   ///
   /// [padding] is the padding around the chip.
   ///
@@ -266,7 +280,8 @@ class ChipDecoration {
   /// [wrap] is whether to wrap or not.
   const new({
     this.deleteIcon,
-    this.backgroundColor = const Color(0xFFE0E0E0),
+    this.backgroundColor,
+    this.disabledBackgroundColor,
     this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
     this.border = const Border(),
     this.spacing = 8,
@@ -279,8 +294,12 @@ class ChipDecoration {
   /// The icon to display for deleting a chip.
   final Icon? deleteIcon;
 
-  /// The background color of the chip.
+  /// The background color of the chip, or null for the theme's chip color.
   final Color? backgroundColor;
+
+  /// The background color of the chip while the dropdown is disabled, or null for the theme's
+  /// `colorScheme.surfaceContainerHighest`.
+  final Color? disabledBackgroundColor;
 
   /// The style of the chip label.
   final TextStyle? labelStyle;

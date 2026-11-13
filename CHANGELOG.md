@@ -1,5 +1,34 @@
 # ChangeLOG
 
+## 5.0.0
+
+### Breaking Changes
+
+- `DropdownDecoration.backgroundColor` is now `Color?`, defaulting to null. Code that reads it must
+  handle null; code that passes a colour is unaffected.
+- The default colours now come from the app's theme instead of fixed light values, so a dark theme
+  gets a dark dropdown. An app that relied on the old light greys should pass them explicitly:
+  - chip: `chipTheme.backgroundColor`, else `colorScheme.surfaceContainerHigh` (was `#E0E0E0`);
+    disabled chip: `colorScheme.surfaceContainerHighest` (was `Colors.grey.shade100`);
+  - dropdown panel: `colorScheme.surfaceContainer` (was `Colors.white`);
+  - selected item: `colorScheme.secondaryContainer` with `onSecondaryContainer` text (was
+    `Colors.grey.shade200` with `onSurface` text).
+
+### Fixes
+
+- A chip's label was left in the theme's text colour, which is light in a dark theme, on a fixed
+  light-grey chip, so it could not be read. Without a `labelStyle` colour, the label and delete icon
+  now take whichever of `colorScheme.onSurface` and `colorScheme.surface` reads better on the chip.
+- The dropdown panel painted a coloured box between its `Material` and the options, which hid the
+  selected fill and ink splashes and made every `ListTile` throw a debug assertion when the list
+  opened. The `Material` now paints the panel on its own.
+- A disabled dropdown no longer shows a chip's delete icon; tapping it used to remove the value from
+  a dropdown that could not otherwise be changed.
+
+### Added
+
+- `ChipDecoration.disabledBackgroundColor`.
+
 ## 4.0.0
 
 ### Breaking Changes
