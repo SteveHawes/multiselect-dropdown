@@ -38,6 +38,9 @@ Future<void> _pump(
   DropdownItemDecoration dropdownItemDecoration =
       const DropdownItemDecoration(),
   ValueChanged<List<String>>? onSelectionChange,
+  FieldDecoration fieldDecoration = const FieldDecoration(
+    labelText: 'Venue type',
+  ),
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -52,7 +55,7 @@ Future<void> _pump(
             dropdownDecoration: dropdownDecoration,
             dropdownItemDecoration: dropdownItemDecoration,
             onSelectionChange: onSelectionChange,
-            fieldDecoration: const FieldDecoration(labelText: 'Venue type'),
+            fieldDecoration: fieldDecoration,
           ),
         ),
       ),
@@ -79,6 +82,18 @@ Color _chipFill(WidgetTester tester, String label) {
         .first,
   );
   return (chip.decoration! as BoxDecoration).color!;
+}
+
+/// [color] as it shows over [base], which is opaque.
+Color _over(Color color, Color base) => Color.alphaBlend(color, base);
+
+/// Opens the dropdown's list.
+Future<void> _open(WidgetTester tester) async {
+  await tester.tap(find.byType(MultiDropdown<String>));
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 300));
+  // A failure to paint the list is reported by its own test.
+  tester.takeException();
 }
 
 /// The list option for [label], in the open list rather than the field.
@@ -295,5 +310,130 @@ void main() {
     expect(chosen.selectedTileColor, selectedFill);
     expect(_ink(tester, _optionLabel('Restaurant')), selectedInk);
     expect(_ink(tester, _optionLabel('Bar')), ink);
+  });
+
+  group('a chip is readable on the colour actually painted', () {
+    final dark = _theme(Brightness.dark);
+    final surface = dark.colorScheme.surface;
+
+    testWidgets('over the page, with a translucent theme chip colour', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        theme: dark.copyWith(
+          chipTheme: ChipThemeData(backgroundColor: Colors.white.withAlpha(30)),
+        ),
+      );
+
+      final painted = _over(_chipFill(tester, 'Restaurant'), surface);
+      expect(
+        _contrast(_ink(tester, _chipLabel('Restaurant')), painted),
+        greaterThanOrEqualTo(4.5),
+      );
+    });
+
+    testWidgets('over a filled field, with a translucent chip colour', (
+      tester,
+    ) async {
+      const field = Color(0xFFF5F5F5);
+      await _pump(
+        tester,
+        theme: dark,
+        chipDecoration: ChipDecoration(
+          backgroundColor: Colors.black.withAlpha(20),
+        ),
+        fieldDecoration: const FieldDecoration(
+          labelText: 'Venue type',
+          backgroundColor: field,
+        ),
+      );
+
+      final painted = _over(
+        _chipFill(tester, 'Restaurant'),
+        _over(field, surface),
+      );
+      expect(
+        _contrast(_ink(tester, _chipLabel('Restaurant')), painted),
+        greaterThanOrEqualTo(4.5),
+      );
+    });
+  });
+
+  testWidgets("a disabled chip keeps the caller's chip colour when it gives no "
+      'disabled one, so the label colour it chose stays readable', (
+    tester,
+  ) async {
+    const chipFill = Color(0xFF0D47A1);
+    await _pump(
+      tester,
+      theme: _theme(Brightness.light),
+      enabled: false,
+      chipDecoration: const ChipDecoration(
+        backgroundColor: chipFill,
+        labelStyle: TextStyle(color: Colors.white),
+      ),
+    );
+
+    expect(_chipFill(tester, 'Restaurant'), chipFill);
+    expect(
+      _contrast(
+        _ink(tester, _chipLabel('Restaurant')),
+        _chipFill(tester, 'Restaurant'),
+      ),
+      greaterThanOrEqualTo(4.5),
+    );
+  });
+
+  group('the list is readable on fills the caller gives without inks', () {
+    testWidgets('a light panel in a dark theme', (tester) async {
+      await _pump(
+        tester,
+        theme: _theme(Brightness.dark),
+        dropdownDecoration: const DropdownDecoration(
+          backgroundColor: Colors.white,
+        ),
+      );
+      await _open(tester);
+
+      expect(
+        _contrast(_ink(tester, _optionLabel('Bar')), Colors.white),
+        greaterThanOrEqualTo(4.5),
+      );
+    });
+
+    testWidgets('a light item fill in a dark theme', (tester) async {
+      final itemFill = Colors.grey.shade100;
+      await _pump(
+        tester,
+        theme: _theme(Brightness.dark),
+        dropdownItemDecoration: DropdownItemDecoration(
+          backgroundColor: itemFill,
+        ),
+      );
+      await _open(tester);
+
+      expect(
+        _contrast(_ink(tester, _optionLabel('Bar')), itemFill),
+        greaterThanOrEqualTo(4.5),
+      );
+    });
+
+    testWidgets('a light selected fill in a dark theme', (tester) async {
+      final selectedFill = Colors.grey.shade200;
+      await _pump(
+        tester,
+        theme: _theme(Brightness.dark),
+        dropdownItemDecoration: DropdownItemDecoration(
+          selectedBackgroundColor: selectedFill,
+        ),
+      );
+      await _open(tester);
+
+      expect(
+        _contrast(_ink(tester, _optionLabel('Restaurant')), selectedFill),
+        greaterThanOrEqualTo(4.5),
+      );
+    });
   });
 }
