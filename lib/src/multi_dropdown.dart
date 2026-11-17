@@ -558,7 +558,9 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
       return const CircularProgressIndicator.adaptive();
     }
 
-    if (widget.fieldDecoration.showClearIcon &&
+    // A disabled dropdown cannot be changed, so it offers no clear either.
+    if (widget.enabled &&
+        widget.fieldDecoration.showClearIcon &&
         _dropdownController.selectedItems.isNotEmpty) {
       return GestureDetector(
         child: const Icon(Icons.clear),

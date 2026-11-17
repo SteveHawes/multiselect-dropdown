@@ -139,7 +139,7 @@ _controller.closeDropdown(); /// Hide the dropdown if it is open
 | borderRadius      | double       | The border radius of the dropdown field.                 | 8.0                         |
 | animateSuffixIcon | bool         | Animate the icon or not.                                 | true                        |
 | padding           | EdgeInsets?  | Padding around the dropdown field.                       | null                        |
-| showClearIcon     | bool         | Show the clear icon or not.                              | true                        |
+| showClearIcon     | bool         | Show the clear icon or not. Hidden while the dropdown is disabled. | true                        |
 
 ## DropdownDecoration
 

@@ -1,5 +1,14 @@
 # ChangeLOG
 
+## 5.0.1
+
+### Fixes
+
+- A disabled dropdown no longer shows the field's clear icon. Tapping it removed every value from a
+  dropdown that could not otherwise be changed, as the chip's delete icon did before 5.0.0.
+- `DropdownItemDecoration.disabledTextColor`'s documentation said a null value used the theme's
+  disabled colour. A disabled item's text is drawn in the list's own text colour, as before.
+
 ## 5.0.0
 
 ### Breaking Changes

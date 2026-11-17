@@ -56,8 +56,8 @@ class DropdownItemDecoration {
   /// [textColor] is the text color of the dropdown item. When null it is the theme's
   /// `colorScheme.onSurface`.
   ///
-  /// [disabledTextColor] is the text color of the disabled dropdown item. When null it is the theme's
-  /// disabled colour.
+  /// [disabledTextColor] is the text color of the disabled dropdown item. When null the item's text
+  /// is drawn in the list's own text colour, as an enabled item's is.
   ///
   /// [selectedIcon] is the icon to display for the selected dropdown item. The default value is Icon(Icons.check).
   ///
