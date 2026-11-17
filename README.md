@@ -171,6 +171,6 @@ _controller.closeDropdown(); /// Hide the dropdown if it is open
 | selectedBackgroundColor | Color | The background color of the selected dropdown item. | null (theme's `colorScheme.secondaryContainer`) |
 | selectedTextColor       | Color | The text color of the selected dropdown item.       | null (theme's `colorScheme.onSecondaryContainer`; with `selectedBackgroundColor`, whichever of `onSurface` / `surface` reads better on it) |
 | textColor               | Color | The text color of the dropdown item.                | null (whichever of `onSurface` / `surface` reads better on the item's fill over the panel) |
-| disabledTextColor       | Color | The text color of the disabled dropdown item.       | null    |
+| disabledTextColor       | Color | The text color of the disabled dropdown item. When null, an enabled item's text color. | null    |
 | selectedIcon            | Icon  | The icon to display for the selected dropdown item. | null    |
 | disabledIcon            | Icon  | The icon to display for the disabled dropdown item. | null    |

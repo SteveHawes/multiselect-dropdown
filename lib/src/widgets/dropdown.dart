@@ -200,7 +200,9 @@ class _Dropdown<T> extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         focusColor: dropdownItemDecoration.backgroundColor?.withAlpha(100),
         selectedColor: selectedInk,
-        textColor: disabled ? dropdownItemDecoration.disabledTextColor : ink,
+        textColor: disabled
+            ? dropdownItemDecoration.disabledTextColor ?? ink
+            : ink,
         tileColor: tileColor ?? Colors.transparent,
         selectedTileColor:
             dropdownItemDecoration.selectedBackgroundColor ??

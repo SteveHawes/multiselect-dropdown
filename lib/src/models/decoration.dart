@@ -90,7 +90,8 @@ class DropdownItemDecoration {
   /// The text color of the dropdown item.
   final Color? textColor;
 
-  /// The text color of the disabled dropdown item.
+  /// The text color of the disabled dropdown item. When null, the item takes the
+  /// same text color as an enabled item.
   final Color? disabledTextColor;
 
   /// The icon to display for the selected dropdown item.

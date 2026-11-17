@@ -1,5 +1,14 @@
 # ChangeLOG
 
+## 5.0.3
+
+### Fixes
+
+- A disabled list item with no `disabledTextColor` was drawn in the theme's `onSurface`, while an
+  enabled item took the ink chosen for the panel or item fill, so on a light panel the caller gave
+  to a dark-themed app the disabled item could not be read. It now takes the same ink as an enabled
+  item, as `disabledTextColor`'s documentation says. With the theme's own colours nothing changes.
+
 ## 5.0.2
 
 ### Fixes
