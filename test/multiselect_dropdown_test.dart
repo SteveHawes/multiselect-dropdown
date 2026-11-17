@@ -41,6 +41,7 @@ Future<void> _pump(
   FieldDecoration fieldDecoration = const FieldDecoration(
     labelText: 'Venue type',
   ),
+  List<DropdownItem<String>>? items,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -49,7 +50,7 @@ Future<void> _pump(
         body: Padding(
           padding: const EdgeInsets.all(16),
           child: MultiDropdown<String>(
-            items: _items(),
+            items: items ?? _items(),
             enabled: enabled,
             chipDecoration: chipDecoration,
             dropdownDecoration: dropdownDecoration,
@@ -415,6 +416,33 @@ void main() {
 
       expect(
         _contrast(_ink(tester, _optionLabel('Bar')), itemFill),
+        greaterThanOrEqualTo(4.5),
+      );
+    });
+
+    testWidgets('a disabled value on a light panel in a dark theme', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        theme: _theme(Brightness.dark),
+        dropdownDecoration: const DropdownDecoration(
+          backgroundColor: Colors.white,
+        ),
+        items: <DropdownItem<String>>[
+          DropdownItem<String>(label: 'Bar', value: 'bar'),
+          DropdownItem<String>(label: 'Club', value: 'club', disabled: true),
+        ],
+      );
+      await _open(tester);
+
+      // Drawn in the list's own ink, as an enabled value is.
+      expect(
+        _ink(tester, _optionLabel('Club')),
+        _ink(tester, _optionLabel('Bar')),
+      );
+      expect(
+        _contrast(_ink(tester, _optionLabel('Club')), Colors.white),
         greaterThanOrEqualTo(4.5),
       );
     });
