@@ -35,6 +35,9 @@ Future<void> _pump(
   bool enabled = true,
   ChipDecoration chipDecoration = const ChipDecoration(),
   DropdownDecoration dropdownDecoration = const DropdownDecoration(),
+  DropdownItemDecoration dropdownItemDecoration =
+      const DropdownItemDecoration(),
+  ValueChanged<List<String>>? onSelectionChange,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -47,6 +50,8 @@ Future<void> _pump(
             enabled: enabled,
             chipDecoration: chipDecoration,
             dropdownDecoration: dropdownDecoration,
+            dropdownItemDecoration: dropdownItemDecoration,
+            onSelectionChange: onSelectionChange,
             fieldDecoration: const FieldDecoration(labelText: 'Venue type'),
           ),
         ),
@@ -143,6 +148,8 @@ void main() {
             matching: find.byType(ListTile),
           ),
         );
+        // The selected fill is painted only while the tile is selected.
+        expect(chosen.selected, isTrue);
         expect(
           _contrast(
             _ink(tester, _optionLabel('Restaurant')),
@@ -170,6 +177,49 @@ void main() {
       ),
       findsNothing,
     );
+  });
+
+  testWidgets('a disabled field offers no way to clear its values', (
+    tester,
+  ) async {
+    final changes = <List<String>>[];
+    await _pump(
+      tester,
+      theme: _theme(Brightness.dark),
+      enabled: false,
+      onSelectionChange: changes.add,
+    );
+
+    expect(find.byIcon(Icons.clear), findsNothing);
+
+    // Tapping where the clear icon sits on an enabled field changes nothing.
+    await tester.tapAt(
+      tester
+          .getCenter(find.byType(InputDecorator))
+          .translate(
+            tester.getSize(find.byType(InputDecorator)).width / 2 - 24,
+            0,
+          ),
+    );
+    await tester.pump();
+    expect(_chipLabel('Restaurant'), findsOneWidget);
+    expect(changes, isEmpty);
+  });
+
+  testWidgets('an enabled field still offers its clear icon', (tester) async {
+    final changes = <List<String>>[];
+    await _pump(
+      tester,
+      theme: _theme(Brightness.dark),
+      onSelectionChange: changes.add,
+    );
+
+    expect(find.byIcon(Icons.clear), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.clear));
+    await tester.pump();
+
+    expect(_chipLabel('Restaurant'), findsNothing);
+    expect(changes.last, isEmpty);
   });
 
   testWidgets('colours the caller gives still win', (tester) async {
@@ -202,5 +252,48 @@ void main() {
           .first,
     );
     expect(material.color, panel);
+  });
+
+  testWidgets("a disabled chip's caller colour still wins", (tester) async {
+    const disabledFill = Color(0xFF345612);
+    await _pump(
+      tester,
+      theme: _theme(Brightness.dark),
+      enabled: false,
+      chipDecoration: const ChipDecoration(
+        disabledBackgroundColor: disabledFill,
+      ),
+    );
+
+    expect(_chipFill(tester, 'Restaurant'), disabledFill);
+  });
+
+  testWidgets("the list's caller colours still win", (tester) async {
+    const selectedFill = Color(0xFF441122);
+    const selectedInk = Color(0xFFEEDDCC);
+    const ink = Color(0xFF112244);
+    await _pump(
+      tester,
+      theme: _theme(Brightness.light),
+      dropdownItemDecoration: const DropdownItemDecoration(
+        selectedBackgroundColor: selectedFill,
+        selectedTextColor: selectedInk,
+        textColor: ink,
+      ),
+    );
+    await tester.tap(find.byType(MultiDropdown<String>));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    tester.takeException();
+
+    final chosen = tester.widget<ListTile>(
+      find.ancestor(
+        of: _optionLabel('Restaurant'),
+        matching: find.byType(ListTile),
+      ),
+    );
+    expect(chosen.selectedTileColor, selectedFill);
+    expect(_ink(tester, _optionLabel('Restaurant')), selectedInk);
+    expect(_ink(tester, _optionLabel('Bar')), ink);
   });
 }
