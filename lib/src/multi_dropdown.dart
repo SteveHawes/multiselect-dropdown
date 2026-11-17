@@ -15,6 +15,32 @@ part 'models/dropdown_item.dart';
 // part 'models/network_request.dart';
 part 'widgets/dropdown.dart';
 
+/// Whichever of [colorScheme]'s surface inks reads better on [fill].
+///
+/// A translucent [fill] is judged by the colour it paints over [base], itself
+/// laid over the scheme's surface, which stands in for the page.
+Color _readableInk(Color fill, ColorScheme colorScheme, {Color? base}) {
+  final under = Color.alphaBlend(
+    base ?? colorScheme.surface,
+    colorScheme.surface,
+  );
+  final paintedLuminance = Color.alphaBlend(fill, under).computeLuminance();
+  double contrast(Color ink) {
+    final inkLuminance = ink.computeLuminance();
+    final lighter = inkLuminance > paintedLuminance
+        ? inkLuminance
+        : paintedLuminance;
+    final darker = inkLuminance > paintedLuminance
+        ? paintedLuminance
+        : inkLuminance;
+    return (lighter + 0.05) / (darker + 0.05);
+  }
+
+  return contrast(colorScheme.onSurface) >= contrast(colorScheme.surface)
+      ? colorScheme.onSurface
+      : colorScheme.surface;
+}
+
 /// typedef for the dropdown item builder.
 typedef DropdownItemBuilder<T> = Widget Function(
   DropdownItem<T> item,
@@ -648,12 +674,19 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
         ? chipDecoration.backgroundColor ??
               theme.chipTheme.backgroundColor ??
               colorScheme.surfaceContainerHigh
+        // A caller who chose the chip's colour (and so perhaps its label's)
+        // keeps it when disabled unless they give a disabled one.
         : chipDecoration.disabledBackgroundColor ??
+              chipDecoration.backgroundColor ??
               colorScheme.surfaceContainerHighest;
     // Left to inherit, the label takes the theme's text colour, which in a
     // dark theme is light, so it vanished on the old fixed light-grey chip.
-    // The ink is chosen against the chip actually painted instead.
-    final ink = _readableInk(fill, colorScheme);
+    // The ink is chosen against the chip as painted over the field instead.
+    final ink = _readableInk(
+      fill,
+      colorScheme,
+      base: widget.fieldDecoration.backgroundColor,
+    );
 
     return Container(
       decoration: BoxDecoration(
@@ -696,25 +729,6 @@ class _MultiDropdownState<T extends Object> extends State<MultiDropdown<T>> {
         ],
       ),
     );
-  }
-
-  /// Whichever of the scheme's surface inks reads better on [fill].
-  static Color _readableInk(Color fill, ColorScheme colorScheme) {
-    final fillLuminance = fill.computeLuminance();
-    double contrast(Color ink) {
-      final inkLuminance = ink.computeLuminance();
-      final lighter = inkLuminance > fillLuminance
-          ? inkLuminance
-          : fillLuminance;
-      final darker = inkLuminance > fillLuminance
-          ? fillLuminance
-          : inkLuminance;
-      return (lighter + 0.05) / (darker + 0.05);
-    }
-
-    return contrast(colorScheme.onSurface) >= contrast(colorScheme.surface)
-        ? colorScheme.onSurface
-        : colorScheme.surface;
   }
 
   void _handleTap() {

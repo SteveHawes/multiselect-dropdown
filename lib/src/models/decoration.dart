@@ -51,10 +51,12 @@ class DropdownItemDecoration {
   /// the theme's `colorScheme.secondaryContainer`.
   ///
   /// [selectedTextColor] is the text color of the selected dropdown item. When null it is the theme's
-  /// `colorScheme.onSecondaryContainer`.
+  /// `colorScheme.onSecondaryContainer`, or, with a [selectedBackgroundColor], whichever of
+  /// `colorScheme.onSurface` and `colorScheme.surface` reads better on that fill.
   ///
-  /// [textColor] is the text color of the dropdown item. When null it is the theme's
-  /// `colorScheme.onSurface`.
+  /// [textColor] is the text color of the dropdown item. When null it is whichever of the theme's
+  /// `colorScheme.onSurface` and `colorScheme.surface` reads better on the item's
+  /// [backgroundColor] over the dropdown's background (`onSurface` with the theme's own colours).
   ///
   /// [disabledTextColor] is the text color of the disabled dropdown item. When null the item's text
   /// is drawn in the list's own text colour, as an enabled item's is.
@@ -261,11 +263,13 @@ class ChipDecoration {
   /// `chipTheme.backgroundColor`, or `colorScheme.surfaceContainerHigh` without one.
   ///
   /// [disabledBackgroundColor] is the background color of the chip while the dropdown is disabled.
-  /// When null it is the theme's `colorScheme.surfaceContainerHighest`.
+  /// When null it is [backgroundColor], so a label colour chosen for it stays readable, or the
+  /// theme's `colorScheme.surfaceContainerHighest` without one.
   ///
   /// [labelStyle] is the style of the chip label. When it gives no color, the label (and the delete
   /// icon) is drawn in whichever of the theme's `colorScheme.onSurface` and `colorScheme.surface`
-  /// reads better on the chip.
+  /// reads better on the chip as painted. A translucent chip colour is judged over the field's
+  /// `FieldDecoration.backgroundColor`, or over the theme's `colorScheme.surface` without one.
   ///
   /// [padding] is the padding around the chip.
   ///
@@ -297,8 +301,8 @@ class ChipDecoration {
   /// The background color of the chip, or null for the theme's chip color.
   final Color? backgroundColor;
 
-  /// The background color of the chip while the dropdown is disabled, or null for the theme's
-  /// `colorScheme.surfaceContainerHighest`.
+  /// The background color of the chip while the dropdown is disabled, or null for [backgroundColor],
+  /// else the theme's `colorScheme.surfaceContainerHighest`.
   final Color? disabledBackgroundColor;
 
   /// The style of the chip label.

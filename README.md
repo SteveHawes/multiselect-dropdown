@@ -113,8 +113,8 @@ _controller.closeDropdown(); /// Hide the dropdown if it is open
 | --------------- | -------------------- | ---------------------------------------------------- | ------------------------- |
 | deleteIcon      | Icon                 | The icon to display for deleting a chip. Hidden while the dropdown is disabled. | Icon(Icons.close) |
 | backgroundColor | Color?               | The background color of the chip.                    | Theme's `chipTheme.backgroundColor`, else `colorScheme.surfaceContainerHigh` |
-| disabledBackgroundColor | Color?       | The background color of the chip while the dropdown is disabled. | Theme's `colorScheme.surfaceContainerHighest` |
-| labelStyle      | TextStyle?           | The style of the chip label. Without a color, the label and delete icon take whichever of `colorScheme.onSurface` / `surface` reads better on the chip. | null |
+| disabledBackgroundColor | Color?       | The background color of the chip while the dropdown is disabled. | `backgroundColor`, else theme's `colorScheme.surfaceContainerHighest` |
+| labelStyle      | TextStyle?           | The style of the chip label. Without a color, the label and delete icon take whichever of `colorScheme.onSurface` / `surface` reads better on the chip as painted (a translucent chip is judged over the field). | null |
 | padding         | EdgeInsets           | The padding around the chip.                         | EdgeInsets.all(8.0)       |
 | border          | BoxBorder            | The border of the chip.                              | Border()                  |
 | spacing         | double               | The spacing between chips.                           | 8.0                       |
@@ -169,8 +169,8 @@ _controller.closeDropdown(); /// Hide the dropdown if it is open
 | backgroundColor         | Color | The background color of the dropdown item.          | null    |
 | disabledBackgroundColor | Color | The background color of the disabled dropdown item. | null    |
 | selectedBackgroundColor | Color | The background color of the selected dropdown item. | null (theme's `colorScheme.secondaryContainer`) |
-| selectedTextColor       | Color | The text color of the selected dropdown item.       | null (theme's `colorScheme.onSecondaryContainer`) |
-| textColor               | Color | The text color of the dropdown item.                | null (theme's `colorScheme.onSurface`) |
+| selectedTextColor       | Color | The text color of the selected dropdown item.       | null (theme's `colorScheme.onSecondaryContainer`; with `selectedBackgroundColor`, whichever of `onSurface` / `surface` reads better on it) |
+| textColor               | Color | The text color of the dropdown item.                | null (whichever of `onSurface` / `surface` reads better on the item's fill over the panel) |
 | disabledTextColor       | Color | The text color of the disabled dropdown item.       | null    |
 | selectedIcon            | Icon  | The icon to display for the selected dropdown item. | null    |
 | disabledIcon            | Icon  | The icon to display for the disabled dropdown item. | null    |

@@ -173,6 +173,24 @@ class _Dropdown<T> extends StatelessWidget {
         : option.unselectedIcon;
 
     final disabled = option.disabled || (disableSelected && option.selected);
+    final colorScheme = theme.colorScheme;
+    final panelColor =
+        decoration.backgroundColor ?? colorScheme.surfaceContainer;
+    // A fill the caller gives without a text colour gets whichever ink reads
+    // on it, so a light panel or fill in a dark theme keeps readable text.
+    final selectedFill = dropdownItemDecoration.selectedBackgroundColor;
+    final selectedInk =
+        dropdownItemDecoration.selectedTextColor ??
+        (selectedFill == null
+            ? colorScheme.onSecondaryContainer
+            : _readableInk(selectedFill, colorScheme, base: panelColor));
+    final ink =
+        dropdownItemDecoration.textColor ??
+        _readableInk(
+          dropdownItemDecoration.backgroundColor ?? Colors.transparent,
+          colorScheme,
+          base: panelColor,
+        );
     return Ink(
       child: ListTile(
         title: Text(option.label, style: option.textStyle),
@@ -181,12 +199,8 @@ class _Dropdown<T> extends StatelessWidget {
         selected: option.selected,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         focusColor: dropdownItemDecoration.backgroundColor?.withAlpha(100),
-        selectedColor:
-            dropdownItemDecoration.selectedTextColor ??
-            theme.colorScheme.onSecondaryContainer,
-        textColor: disabled
-            ? dropdownItemDecoration.disabledTextColor
-            : dropdownItemDecoration.textColor ?? theme.colorScheme.onSurface,
+        selectedColor: selectedInk,
+        textColor: disabled ? dropdownItemDecoration.disabledTextColor : ink,
         tileColor: tileColor ?? Colors.transparent,
         selectedTileColor:
             dropdownItemDecoration.selectedBackgroundColor ??

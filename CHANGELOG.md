@@ -1,5 +1,23 @@
 # ChangeLOG
 
+## 5.0.2
+
+### Fixes
+
+- A chip's label and delete icon were chosen against a translucent chip colour as though it were
+  opaque, so a translucent `chipTheme.backgroundColor` or `ChipDecoration.backgroundColor` could
+  get an ink that does not read on the colour actually painted. The chip is now judged as painted
+  over the field's `FieldDecoration.backgroundColor`, or over the theme's `colorScheme.surface`.
+- A disabled chip fell back to the theme's `surfaceContainerHighest` even when the caller gave a
+  `ChipDecoration.backgroundColor`, but kept the caller's label colour, so a white label on a
+  caller's dark chip became white on light grey. Without a `disabledBackgroundColor`, a disabled
+  chip now keeps the caller's `backgroundColor`.
+- List text kept the theme's `onSurface` / `onSecondaryContainer` whatever panel, item or selected
+  fill the caller gave, so a light fill passed to a dark-themed app, as the 5.0.0 migration note
+  suggests, gave light text on a light fill. Without `textColor` / `selectedTextColor`, the text now
+  takes whichever of `onSurface` and `surface` reads better on the fill the caller gave. With the
+  theme's own colours nothing changes.
+
 ## 5.0.1
 
 ### Fixes
@@ -22,6 +40,8 @@
   - dropdown panel: `colorScheme.surfaceContainer` (was `Colors.white`);
   - selected item: `colorScheme.secondaryContainer` with `onSecondaryContainer` text (was
     `Colors.grey.shade200` with `onSurface` text).
+  - On 5.0.0 and 5.0.1, list text does not follow a fill you pass, so also pass `textColor` and
+    `selectedTextColor` there. From 5.0.2 the text follows the fill.
 
 ### Fixes
 
